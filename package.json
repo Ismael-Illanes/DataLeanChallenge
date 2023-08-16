@@ -1,0 +1,19 @@
+{
+  "name": "front-dlm-53703962c",
+  "version": "1.0.1",
+  "scripts": {
+    "start": "vite dev --host",
+    "dev": "vite dev --host",
+    "build": "vite build",
+    "lint": "eslint src --fix"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.12",
+    "lit": "^2.4.0",
+    "postcss": "^8.4.18",
+    "sass": "^1.55.0",
+    "tailwindcss": "^3.2.0",
+    "vite": "^3.1.8"
+  },
+  "dependencies": {}
+}
