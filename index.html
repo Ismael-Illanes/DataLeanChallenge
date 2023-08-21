@@ -1,15 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="/src/images/letra-d2.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"
+    />
     <title>Code Challenge DL</title>
-</head>
-
-<body>
-
-</body>
-
+  </head>
+  <body>
+    <list-forms></list-forms>
+    <simple-form></simple-form>
+    <script>
+      window.addEventListener("load", () => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const toastrOptions = {
+          closeButton: false,
+          debug: false,
+          newestOnTop: true,
+          progressBar: true,
+          positionClass: "toast-top-right",
+          preventDuplicates: false,
+          onclick: null,
+          showDuration: "300",
+          hideDuration: "1000",
+          timeOut: "2500",
+          extendedTimeOut: "1000",
+          showEasing: "swing",
+          hideEasing: "linear",
+          showMethod: "fadeIn",
+          hideMethod: "fadeOut",
+        };
+        if (urlSearchParams.has("ok")) {
+          toastr.options = toastrOptions;
+          toastr.success("Formulario enviado con éxito.");
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        } else if (urlSearchParams.has("error")) {
+          toastr.error("Ha ocurrido un error, datos no enviados.");
+          window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+          );
+        }
+      });
+    </script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+      integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"
+      integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script type="module" src="src/components/form.js"></script>
+    <script type="module" src="src/components/list.js"></script>
+  </body>
 </html>

@@ -3,10 +3,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'customColorOne': '#0F162B',
-        'customColorTwo': '#1F283B'
+        'custom-color-darkgray': '#0D1117',
+        'custom-color-lightgray': '#E7EDF2',
+        'custom-color-lightblack': '#010409'
       }
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')
+  ],
 };
