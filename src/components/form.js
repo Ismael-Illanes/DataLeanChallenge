@@ -125,8 +125,11 @@ class Form extends TailwindElement() {
       try {
         const response = await this.saveFormData(requestFormData);
         const responseData = response.data;
-       
-        localStorage.setItem("formData", responseData);
+        const formData = localStorage.getItem("formData");
+        const formDataArray = formData ? JSON.parse(formData) : [];
+
+        formDataArray.push(responseData);
+        localStorage.setItem("formData", JSON.stringify(formDataArray));
 
         this.redirectToHomePage(response);
       } catch (e) {
