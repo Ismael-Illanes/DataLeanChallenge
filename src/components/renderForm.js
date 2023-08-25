@@ -255,6 +255,10 @@ class FormRender extends TailwindElement() {
     }
   }
 
+
+  returnMainpage(){
+    window.location.replace('http://localhost:5173/')
+  }
   hideShowCheckboxes() {
     const requiredCheckboxes = this.shadowRoot.querySelectorAll(
       'input[type="checkbox"][name="favlang"]:not([value="other"])'
@@ -622,6 +626,7 @@ class FormRender extends TailwindElement() {
                         class="mt-6 flex w-full sm:col-span-4 items-center justify-center gap-x-6"
                       >
                         <button
+                        @click=${this.returnMainpage}
                           type="button"
                           class="rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-gray-600 hover:ring-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200"
                         >
