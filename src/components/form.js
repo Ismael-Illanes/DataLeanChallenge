@@ -9,6 +9,40 @@ class Form extends TailwindElement() {
     super();
   }
 
+  firstUpdated() {
+    super.firstUpdated();
+    this.checkURLParams();
+  }
+
+  checkURLParams() {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const mainBox = this.shadowRoot.getElementById("main-box");
+
+    if (urlSearchParams.size <= 1) {
+      mainBox.classList.remove("hidden");
+    } else {
+      mainBox.classList.add("hidden");
+    }
+
+    if (urlSearchParams.has("ok")) {
+      toastr.options = toastrOptions;
+      toastr.success("Formulario enviado con éxito.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (urlSearchParams.has("error")) {
+      toastr.options = toastrOptions;
+      toastr.error("Ha ocurrido un error, datos no enviados.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (urlSearchParams.has("update")) {
+      toastr.options = toastrOptions;
+      toastr.success("Formulario actualizado.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (urlSearchParams.has("removed")) {
+      toastr.options = toastrOptions;
+      toastr.success("Formulario eliminado.");
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }
+
   /**
    * Sends form data to the backend and save it
    * @param {*} FormData
@@ -124,12 +158,6 @@ class Form extends TailwindElement() {
     if (validateChecker) {
       try {
         const response = await this.saveFormData(requestFormData);
-        const responseData = response.data;
-        const formData = localStorage.getItem("formData");
-        const formDataArray = formData ? JSON.parse(formData) : [];
-
-        formDataArray.push(responseData);
-        localStorage.setItem("formData", JSON.stringify(formDataArray));
 
         this.redirectToHomePage(response);
       } catch (e) {
@@ -209,7 +237,7 @@ class Form extends TailwindElement() {
 
   render() {
     return html`
-    <div class="bg-custom-color-darkgray lg:py-5 w-full min-h-fit">
+    <div id="main-box" class="bg-custom-color-darkgray lg:py-5 w-full min-h-fit">
     
     <div class=" bg-custom-color-darkgray shadow-lg shadow-indigo-500/10 lg:bordered  max-w-screen-lg p-5 mx-auto">
 <form name="mainForm" method="POST" @submit=${this.handleSubmit}>
