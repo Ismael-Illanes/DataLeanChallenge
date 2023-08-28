@@ -7,6 +7,9 @@ import { toastrOptions } from "../shared/toastrOptions";
 class Form extends TailwindElement() {
   constructor() {
     super();
+
+    // Code Review: I think you could instatiate toastr.options = toastrOptions only
+    // one time here or in 'firstUpdated' and then use it everytime.
   }
 
   firstUpdated() {
@@ -14,6 +17,9 @@ class Form extends TailwindElement() {
     this.checkURLParams();
   }
 
+  // Code Review: Can you tell me what is the idea with this function?
+  // Like check the current error status? we can go for a better
+  // error control here.
   checkURLParams() {
     const urlSearchParams = new URLSearchParams(window.location.search);
     const mainBox = this.shadowRoot.getElementById("main-box");
@@ -45,11 +51,16 @@ class Form extends TailwindElement() {
 
   /**
    * Sends form data to the backend and save it
+   * Code Review: @param {Object} FormData
    * @param {*} FormData
    * @returns Promise<Object>
    */
+  // Code Review: This API call logic sohuld be outside the component.
   async saveFormData(requestFormData) {
+    // Code Review: Why this url enconding? you could use 'application/json'
+    // and just send the JSON.Stringify(requestFormData) as body:
     const urlEncoded = new URLSearchParams(requestFormData).toString();
+    // Code Review: this URL should come from .env file
     const URL = "http://localhost:3000/api/v1/";
 
     const response = await fetch(URL, {
@@ -74,9 +85,11 @@ class Form extends TailwindElement() {
     const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     const phoneRegex = /^[0-9]+$/;
 
-    let validationFailed = false;
-    let errorMessage = "";
-
+    // Code Review: You can rename this to 'validationStatus' and by default the validation would be true
+    let validationStatus = true;
+    // Code Review: I think the strategy here would be better if it was more dinamyc.
+    // You could for each every element on the form and check the mandatory conditions for each one
+    // 'validation="email"' or 'validation="notEmpty"' also putting the corresponding message and style for each one
     if (
       !requestFormData.formName ||
       !requestFormData.description ||
@@ -89,44 +102,49 @@ class Form extends TailwindElement() {
       !requestFormData.gender ||
       requestFormData.favlang.length === 0
     ) {
-      validationFailed = true;
-      errorMessage = "Todos los campos son requeridos";
+      validationStatus = false;
+      // Code Review: You can just call toast directly
+      toastr.error("Todos los campos son requeridos");
+
+      return validationStatus;
     } else if (!requestFormData.email.match(emailRegex)) {
       const emailInput = event.target.querySelector("#email");
 
       emailInput.classList.remove("ring-gray-300");
       emailInput.classList.add("ring-red-600");
 
+      // Code Review: You should not use HMTL element tag as selector, you can create a dedicated class for this
+      // i.e: emailInput.addEventListener(".emailInput",() => ......
       emailInput.addEventListener("input", () => {
         emailInput.classList.remove("ring-red-600");
         emailInput.classList.add("ring-gray-300");
       });
 
-      validationFailed = true;
-      errorMessage = "Por favor, introduce una dirección de correo válida.";
+      validationFailed = false;
+      // Code Review: You can just call toast directly
+      toastr.error("Por favor, introduce una dirección de correo válida.");
     } else if (!requestFormData.phone.match(phoneRegex)) {
       const phoneInput = event.target.querySelector("#phone");
 
       phoneInput.classList.remove("ring-gray-300");
       phoneInput.classList.add("ring-red-600");
 
+      // Code Review: You should not use HMTL element tag as selector, you can create a dedicated class for this
+      // i.e: phoneInput.addEventListener(".phoneInput",() => ......
       phoneInput.addEventListener("input", () => {
         phoneInput.classList.remove("ring-red-600");
         phoneInput.classList.add("ring-gray-300");
       });
 
-      validationFailed = true;
-      errorMessage =
-        "Por favor, introduzca un número de teléfono válido (solo números).";
+      validationStatus = false;
+      // Code Review: You can just call toast directly 'toastr.error("Por favor, introduzca un número de teléfono válido (solo números).");'
+      toastr.error(
+        "Por favor, introduzca un número de teléfono válido (solo números)."
+      );
     }
 
-    if (validationFailed) {
-      toastr.error(errorMessage);
-
-      return false;
-    } else {
-      return true;
-    }
+    // Code Review: You can just 'return validationStatus'
+    return validationStatus;
   }
 
   /**
@@ -164,6 +182,7 @@ class Form extends TailwindElement() {
         console.error("Error al enviar los datos:", e);
       }
     } else {
+      // Code Review: You need this prevent again?
       event.preventDefault();
     }
   }
@@ -225,6 +244,7 @@ class Form extends TailwindElement() {
     });
   }
 
+  // Code review: we can think of a better aproach on the error handling
   redirectToHomePage(response) {
     const homePageOk = "http://localhost:5173/?ok=true";
     const homePageError = "http://localhost:5173/?error=true";

@@ -1,3 +1,6 @@
+// Code Review: I think i know why you repetead almost all the code. We can check it out and
+// use and optimal workaround on this.
+
 import { html } from "lit";
 
 import { TailwindElement } from "../shared/tailwind.element";
@@ -54,13 +57,20 @@ class FormRender extends TailwindElement() {
     buttonContainer.appendChild(submitBtn);
   }
 
+  // Code Review: Again the API call should be outside the component on a dedicated folder and file.
+  // Code Review: The name of the function is not accurate, it update the data of a selected form (?)
   async saveFormData(requestFormData) {
+    // Code Review: Is this JSON.stringify() needed?
     const requestFormDataJSON = JSON.stringify(requestFormData);
     const requestFormDataObject = JSON.parse(requestFormDataJSON);
+    // Code Review: We can do it better using the actual id on the DOM element and
+    // taking it on click (We can disccuss it on a call)
     const idStorage = localStorage.getItem("FormElementId");
     const dateStorage = localStorage.getItem("FormElementDate");
     requestFormDataObject.id = idStorage;
     requestFormDataObject.createdAt = dateStorage;
+
+    // Code Review: Again, unnecesary enconding.
     const urlEncoded = new URLSearchParams(requestFormDataObject).toString();
     const URL = `http://localhost:3000/api/v1/${idStorage}`;
     const response = await fetch(URL, {
@@ -168,7 +178,7 @@ class FormRender extends TailwindElement() {
       event.preventDefault();
     }
   }
-
+  // Code Review: Same here, API call should go outside.
   async deleteFormData() {
     const idStorage = localStorage.getItem("FormElementIdForDelete");
 
@@ -255,9 +265,8 @@ class FormRender extends TailwindElement() {
     }
   }
 
-
-  returnMainpage(){
-    window.location.replace('http://localhost:5173/')
+  returnMainpage() {
+    window.location.replace("http://localhost:5173/");
   }
   hideShowCheckboxes() {
     const requiredCheckboxes = this.shadowRoot.querySelectorAll(
@@ -301,6 +310,7 @@ class FormRender extends TailwindElement() {
   }
 
   redirectToHomePage(response) {
+    // Code Review: Never use Absolute URLs, use relatives ones if you need to use it.
     const homePageOk = "http://localhost:5173/?update=true";
     const homePageError = "http://localhost:5173/?error=true";
     if (response) {
@@ -626,7 +636,7 @@ class FormRender extends TailwindElement() {
                         class="mt-6 flex w-full sm:col-span-4 items-center justify-center gap-x-6"
                       >
                         <button
-                        @click=${this.returnMainpage}
+                          @click=${this.returnMainpage}
                           type="button"
                           class="rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-gray-600 hover:ring-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-200"
                         >
