@@ -11,6 +11,9 @@ class List extends TailwindElement(LitElement) {
     await this.getDataAndCreateElement();
   }
 
+  // Code Review: Again this needs to be outside the component.
+  // Code Review: A lot of logic for just one function, the logic should be splitted onto abstract functions
+  // as much as possible.
   async getDataAndCreateElement() {
     const URL = "http://localhost:3000/api/v1/findall/forms";
     const response = await fetch(URL, {
@@ -26,6 +29,7 @@ class List extends TailwindElement(LitElement) {
     listFormsDiv.innerHTML = "";
 
     if (responseJSON.length === 0) {
+      // Code Review: What this 'soloPE1' means?
       const soloPEl = document.createElement("p");
       soloPEl.classList.add(
         "text-sm",
@@ -36,13 +40,27 @@ class List extends TailwindElement(LitElement) {
         "break-words"
       );
       soloPEl.textContent = "No hay formularios por el momento.";
-      listFormsDiv.classList.remove("p-2", "grid", "grid-cols-1", "md:grid-cols-2", "lg:grid-cols-3", "gap-4");
-        listFormsDiv.classList.add('text-center', 'p-5')
+      listFormsDiv.classList.remove(
+        "p-2",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "lg:grid-cols-3",
+        "gap-4"
+      );
+      listFormsDiv.classList.add("text-center", "p-5");
 
       listFormsDiv.appendChild(soloPEl);
     } else {
-      listFormsDiv.classList.add("p-2", "grid", "grid-cols-1", "md:grid-cols-2", "lg:grid-cols-3", "gap-4");
-      listFormsDiv.classList.remove('text-center', 'p-5')
+      listFormsDiv.classList.add(
+        "p-2",
+        "grid",
+        "grid-cols-1",
+        "md:grid-cols-2",
+        "lg:grid-cols-3",
+        "gap-4"
+      );
+      listFormsDiv.classList.remove("text-center", "p-5");
       responseJSON.forEach((parsed) => {
         const card1Div = document.createElement("div");
         card1Div.classList.add(
